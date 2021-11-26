@@ -15,24 +15,24 @@ Tables.extend('channel', {
   rss: 'list',
 })
 
+const logger = new Logger('rss')
+
+export const name = 'RSS'
+
 export interface Config {
   timeout?: number
   refresh?: number
   userAgent?: string
 }
 
-const logger = new Logger('rss')
-
-export const name = 'rss'
-
-export const schema: Schema<Config> = Schema.object({
+export const Config: Schema<Config> = Schema.object({
   timeout: Schema.number('请求数据的最长时间。').default(Time.second * 10),
   refresh: Schema.number('刷新数据的时间间隔。').default(Time.minute),
   userAgent: Schema.string('请求时使用的 User Agent。'),
 })
 
-export function apply(ctx: Context, config: Config = {}) {
-  const { timeout = 10 * Time.second, refresh = Time.minute, userAgent } = config
+export function apply(ctx: Context, config: Config) {
+  const { timeout, refresh, userAgent } = config
   const feedMap: Record<string, Set<string>> = {}
   const feeder = new RssFeedEmitter({ skipFirstLoad: true, userAgent })
 

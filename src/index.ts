@@ -18,6 +18,7 @@ Tables.extend('channel', {
 const logger = new Logger('rss')
 
 export const name = 'RSS'
+export const using = ['database']
 
 export interface Config {
   timeout?: number
@@ -26,9 +27,9 @@ export interface Config {
 }
 
 export const Config: Schema<Config> = Schema.object({
-  timeout: Schema.number('请求数据的最长时间。').default(Time.second * 10),
-  refresh: Schema.number('刷新数据的时间间隔。').default(Time.minute),
-  userAgent: Schema.string('请求时使用的 User Agent。'),
+  timeout: Schema.number().description('请求数据的最长时间。').default(Time.second * 10),
+  refresh: Schema.number().description('刷新数据的时间间隔。').default(Time.minute),
+  userAgent: Schema.string().description('请求时使用的 User Agent。'),
 })
 
 export function apply(ctx: Context, config: Config) {

@@ -1,4 +1,4 @@
-import { Context, Session, Logger, Tables, Time, Schema } from 'koishi'
+import { Context, Session, Logger, Time, Schema } from 'koishi'
 import RssFeedEmitter from 'rss-feed-emitter'
 
 declare module 'koishi' {
@@ -10,10 +10,6 @@ declare module 'koishi' {
     rss: typeof import('.')
   }
 }
-
-Tables.extend('channel', {
-  rss: 'list',
-})
 
 const logger = new Logger('rss')
 
@@ -33,6 +29,10 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 export function apply(ctx: Context, config: Config) {
+  ctx.model.extend('channel', {
+    rss: 'list',
+  })
+
   const { timeout, refresh, userAgent } = config
   const feedMap: Record<string, Set<string>> = {}
   const feeder = new RssFeedEmitter({ skipFirstLoad: true, userAgent })

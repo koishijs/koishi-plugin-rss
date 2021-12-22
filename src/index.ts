@@ -56,29 +56,29 @@ export function apply(ctx: Context, config: Config) {
     }
   }
 
-  ctx.on('disconnect', () => {
+  ctx.on('dispose', () => {
     feeder.destroy()
   })
 
-  ctx.on('connect', async () => {
-    feeder.on('error', (err: Error) => {
-      logger.debug(err.message)
-    })
+  feeder.on('error', (err: Error) => {
+    logger.debug(err.message)
+  })
 
+  feeder.on('new-item', async (payload) => {
+    logger.debug('receive', payload.title)
+    const source = payload.meta.link
+    if (!feedMap[source]) return
+    const message = `${payload.meta.title} (${payload.author})\n${payload.title}`
+    await ctx.broadcast([...feedMap[source]], message)
+  })
+
+  ctx.on('ready', async () => {
     const channels = await ctx.database.getAssignedChannels(['platform', 'id', 'rss'])
     for (const channel of channels) {
       for (const url of channel.rss) {
         subscribe(url, `${channel.platform}:${channel.id}`)
       }
     }
-
-    feeder.on('new-item', async (payload) => {
-      logger.debug('receive', payload.title)
-      const source = payload.meta.link
-      if (!feedMap[source]) return
-      const message = `${payload.meta.title} (${payload.author})\n${payload.title}`
-      await ctx.broadcast([...feedMap[source]], message)
-    })
   })
 
   const validators: Record<string, Promise<unknown>> = {}

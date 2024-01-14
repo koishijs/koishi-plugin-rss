@@ -14,7 +14,7 @@ declare module 'koishi' {
 const logger = new Logger('rss')
 
 export const name = 'RSS'
-export const using = ['database'] as const
+export const inject = ['database'] as const
 
 export interface Config {
   timeout?: number

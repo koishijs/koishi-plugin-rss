@@ -14,7 +14,7 @@ declare module 'koishi' {
 const logger = new Logger('rss')
 
 export const name = 'RSS'
-export const using = ['database'] as const
+export const inject = ['database'] as const
 
 export interface Config {
   timeout?: number
@@ -105,11 +105,11 @@ export function apply(ctx: Context, config: Config) {
 
   ctx.guild()
     .command('rss <url:text>', '订阅 RSS 链接')
-    .channelFields(['rss', 'id'])
+    .channelFields(['rss', 'id', 'platform'])
     .option('list', '-l 查看订阅列表')
     .option('remove', '-r 取消订阅')
     .action(async ({ session, options }, url) => {
-      const { rss, id } = session.channel
+      const { rss, id, platform } = session.channel
       if (options.list) {
         if (!rss.length) return '未订阅任何链接。'
         return rss.join('\n')
@@ -120,13 +120,13 @@ export function apply(ctx: Context, config: Config) {
       if (options.remove) {
         if (index < 0) return '未订阅此链接。'
         rss.splice(index, 1)
-        unsubscribe(url, id)
+        unsubscribe(url, `${platform}:${id}`)
         return '取消订阅成功！'
       }
 
       if (index >= 0) return '已订阅此链接。'
       return validate(url, session).then(() => {
-        subscribe(url, id)
+        subscribe(url, `${platform}:${id}`)
         if (!rss.includes(url)) {
           rss.push(url)
           return '添加订阅成功！'

@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-rss",
   "description": "Subscribe RSS Url for Koishi",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -28,13 +28,22 @@
     "chatbot",
     "koishi",
     "plugin",
-    "rss",
-    "required:database"
+    "rss"
   ],
+  "koishi": {
+    "service": {
+      "required": [
+        "database"
+      ]
+    }
+  },
   "peerDependencies": {
-    "koishi": "^4.1.1"
+    "koishi": "^4.16.6"
+  },
+  "devDependencies": {
+    "koishi": "^4.16.6"
   },
   "dependencies": {
-    "rss-feed-emitter": "^3.2.2"
+    "rss-feed-emitter": "^3.2.3"
   }
 }
